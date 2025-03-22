@@ -1,7 +1,7 @@
 
 
 ### Welcome!
-Thank you for your interest in joining the Echoes of Aetherium Team! This is a simplified skill test designed to understand your approach to problem-solving and development. The tasks are categorized based on your area of expertise.
+Thank you for your interest in joining! This is a simplified skill test designed to understand your approach to problem-solving and development. The tasks are categorized based on your area of expertise.
 
 ---
 
