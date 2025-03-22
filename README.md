@@ -27,13 +27,13 @@ Build a small part of a card memory game based on your assigned role. This is me
    ```bash
    cd ./backend
    npm install
-   npm run dev
+   npm start
    ```
 4. Set up the frontend:
    ```bash
    cd ../frontend
    npm install
-   npm start
+   npm run dev
    ```
 5. Visit `http://localhost:5173` to see the project.
 
