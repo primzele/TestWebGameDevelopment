@@ -11,6 +11,7 @@ const saveSchema = new mongoose.Schema({
   },
   completed: { type: Number, required: true },
   timeTaken: { type: Number, required: true },
+  score: Number,
 });
 
 module.exports = mongoose.model('Save', saveSchema);

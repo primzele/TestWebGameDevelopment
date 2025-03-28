@@ -8,6 +8,14 @@ import buttonHoverSound from "../assets/audio/button-hover.mp3";
 import buttonClickSound from "../assets/audio/button-click.mp3";
 import { X } from "lucide-react";
 import "./Play.css";
+import axios from "axios";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const modalStyles = {
   overlay: {
@@ -66,10 +74,12 @@ const modalPlayStyles = {
 const Play = () => {
   const navigate = useNavigate();
   const [SettingsmodalIsOpen, setModalSettingIsOpen] = useState(false);
+  const [HighScoresModalIsOpen, setHighScoresModalOpen] = useState(false);
   const [PlaymodalIsOpen, setModalPlayIsOpen] = useState(false);
   const [difficulty, setDifficulty] = useState(null);
   const [isCalmMode, setIsCalmMode] = useState(false);
-  
+  const [highScores, setHighScores] = useState([]);
+
   const [bgVolume, setBgVolume] = useState(
     localStorage.getItem("bgVolume") !== null ? parseInt(localStorage.getItem("bgVolume"), 10) : 50
   );
@@ -160,6 +170,64 @@ const Play = () => {
     playClickSound();
   };
 
+    const HighScoresModalOpen = () => {
+        playClickSound();
+        fetchHighScores();
+        setHighScoresModalOpen(true);
+    };
+
+    const HighScoresModalClose = () => {
+        setHighScoresModalOpen(false);
+        playClickSound();
+    };
+
+    const fetchHighScores = async () => {
+
+        const userID = localStorage.getItem("userID");
+        if (!userID) {
+          alert("UserID is missing. Please log in again.");
+          return;
+        }
+
+      try {
+        const response = await axios.get("http://localhost:5000/api/memory/save/history/" + userID , {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        setHighScores(response.data.data);
+
+      } catch (error) {
+        console.error("Could not fetch high scores:", error.response ? error.response.data : error.message);
+      }
+    };
+
+
+    const highScoresTable = () => {
+        return (
+          <TableContainer component={Paper}>
+            <Table sx={{ width: "100%" }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Score</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {highScores.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                    <TableCell component="th" scope="row">{Date(row.gameDate)}</TableCell>
+                    <TableCell>{Math.round(row.score)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )
+    }
+
   const PlayopenModal = () => {
     playClickSound();
     setModalPlayIsOpen(true);
@@ -226,6 +294,13 @@ const Play = () => {
           Play
         </button>
         <button
+            className={`game-button ${isCalmMode ? "calm-button" : ""}`}
+            onClick={HighScoresModalOpen}
+            onMouseEnter={playHoverSound}
+        >
+            High Scores
+        </button>
+        <button
           className={`game-button ${isCalmMode ? "calm-button" : ""}`}
           onClick={() => {
             playClickSound();
@@ -243,6 +318,39 @@ const Play = () => {
           Settings
         </button>
       </div>
+
+
+      <Modal
+        isOpen={HighScoresModalIsOpen}
+        onRequestClose={HighScoresModalClose}
+        style={{
+          ...modalStyles,
+          content: {
+            ...modalStyles.content,
+            overflow: "scroll",
+            backgroundColor: isCalmMode ? "#86a17d" : "#1e1e2e",
+            color: isCalmMode ? "#ffffff" : "#fff",
+          },
+        }}
+      >
+          <button
+            onClick={HighScoresModalClose}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "#fff",
+            }}
+          >
+            <X size={24} />
+          </button>
+            {highScoresTable()}
+      </Modal>
+
+
       <Modal
         isOpen={SettingsmodalIsOpen}
         onRequestClose={SettingcloseModal}

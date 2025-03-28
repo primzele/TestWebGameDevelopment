@@ -82,3 +82,43 @@ Build a small part of a card memory game based on your assigned role. This is me
 
 
 ### ⚡ **Good Luck and Have Fun!**
+
+Notes from developer:
+
+- Game results are already stored in >>Save<< schema so no need for new schema.
+- Added field >>score<< which indicates the score reached by the player for that particular game
+  - Includes simple formula to calculate score
+    - score = 1 / timeTaken * failed * 1000;
+      
+   - Explanation:
+     - timeTaken in seconds and number of failed attempts
+     - the longer the game is played and more failed attempts results in lower score
+     - "* 1000" so the score is a full number ranging 1-1000 instead of small 0.0001 -> 1.0
+
+- Added function to retrieve game results from db memoryController.js -> fetchSaveHistory
+  - The function expects userId as parameter found in request.params and 
+   returns filtered saved games just for that particular user
+  - Returns top 5 scores ordered by score descending
+
+- Route, defined in routes/memoryRoutes.js takes :userId as query param which is not ideal. 
+Ideally i think would be for UI to send User JWT token in every request inside "Authorization Bearer"
+header. The backend would then decode the token and read the userId from there after successful validation.
+
+On Frontend:
+
+- redesigned login page but very basic, using Card component from Material UI Framework
+- Added High Scores page which displays top 5 high scores for the logged-in user. 
+  - Could be improved further by designing a table in a nicer way 
+  - perhaps use localStorage and state management to avoid too many calls to backend
+
+Frontend development is not my specialty but I do know my way around most popular frameworks like react and vue.js
+
+I mostly specialized in backends and devops, i am very good with python, linux shells, 
+docker containerization, devops pipelines, i have worked with all major cloud services, like AWS, Azure, 
+even SAP BTP. 
+
+Another thing I'd like to mention is, I'd rather use python for backends like this.
+Using modern frameworks like FastAPI and Pydantic for model definitions and validation
+can save a lot of time and effort, but maybe that's just the python developer's in me opinion :) 
+Always fun to use new tools and have new challenges :)
+
